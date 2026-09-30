@@ -218,6 +218,33 @@ else
 fi
 
 # --------------------------------------------
+# 8b. Usuario administrador inicial (login web)
+# --------------------------------------------
+export ADMIN_EMAIL="${ADMIN_EMAIL:-admin@gmail.com}"
+export ADMIN_PASSWORD="${ADMIN_PASSWORD:-admin123}"
+
+if [ "$DB_READY" = "1" ]; then
+    echo "==> Asegurando usuario administrador ${ADMIN_EMAIL}"
+    php -r '
+        require "vendor/autoload.php";
+        $app = require "bootstrap/app.php";
+        $app->make(Illuminate\Contracts\Console\Kernel::class)->bootstrap();
+        $email = getenv("ADMIN_EMAIL");
+        $pass  = getenv("ADMIN_PASSWORD");
+        if (!App\User::where("email", $email)->exists()) {
+            App\User::create([
+                "name" => "Administrador",
+                "email" => $email,
+                "password" => bcrypt($pass),
+            ]);
+            echo "Usuario administrador creado\n";
+        } else {
+            echo "El usuario administrador ya existe\n";
+        }
+    ' || true
+fi
+
+# --------------------------------------------
 # 9. Optimización Laravel
 # --------------------------------------------
 echo "==> Optimizando Laravel"

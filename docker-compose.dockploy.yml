@@ -110,6 +110,9 @@ services:
       - GRAPHIC_REPRESENTATION_TEMPLATE=${GRAPHIC_REPRESENTATION_TEMPLATE:-2}
       - ALLOW_PUBLIC_REGISTER=${ALLOW_PUBLIC_REGISTER:-true}
       - VALIDATE_BEFORE_SENDING=${VALIDATE_BEFORE_SENDING:-true}
+      # Usuario administrador inicial (login web). Cambia la contraseña luego.
+      - ADMIN_EMAIL=${ADMIN_EMAIL:-admin@gmail.com}
+      - ADMIN_PASSWORD=${ADMIN_PASSWORD:-admin123}
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "php", "-v"]
