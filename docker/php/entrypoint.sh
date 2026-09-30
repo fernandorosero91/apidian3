@@ -120,6 +120,11 @@ if ! grep -qE '^APP_KEY=base64:' .env; then
     fi
 fi
 
+# Exportar la clave real para PHP-FPM. Si el contenedor trae APP_KEY vacío,
+# Laravel (Dotenv inmutable) ignoraría el valor de .env y fallaría con
+# "No application encryption key has been specified".
+export APP_KEY="$(grep -E '^APP_KEY=' .env | head -1 | cut -d= -f2-)"
+
 # --------------------------------------------
 # 5. Dependencias de Composer
 # --------------------------------------------
@@ -166,7 +171,9 @@ fi
 # 7. Permisos
 # --------------------------------------------
 chown -R www-data:www-data storage bootstrap/cache 2>/dev/null || true
-chmod -R 775 storage bootstrap/cache 2>/dev/null || true
+chmod -R 777 storage bootstrap/cache 2>/dev/null || true
+touch storage/logs/laravel.log 2>/dev/null || true
+chown www-data:www-data storage/logs/laravel.log 2>/dev/null || true
 mkdir -p vendor/mpdf/mpdf/tmp 2>/dev/null || true
 chmod -R 777 vendor/mpdf 2>/dev/null || true
 
@@ -222,6 +229,7 @@ php artisan view:clear 2>/dev/null || true
 php artisan route:clear 2>/dev/null || true
 
 chown -R www-data:www-data storage bootstrap/cache 2>/dev/null || true
+chmod -R 777 storage bootstrap/cache 2>/dev/null || true
 
 echo "==> APIDIAN listo. Iniciando PHP-FPM"
 exec docker-php-entrypoint php-fpm
