@@ -87,4 +87,13 @@ RUN echo "[www]" > /usr/local/etc/php-fpm.d/zz-performance.conf \
 # Configurar timezone para Colombia
 RUN echo "date.timezone = America/Bogota" >> /usr/local/etc/php/conf.d/custom.ini
 
+# No limpiar variables de entorno (necesario para Traefik/Dokploy)
+RUN echo "clear_env = no" >> /usr/local/etc/php-fpm.d/zz-performance.conf
+
+# Entrypoint que automatiza el despliegue (composer, .env, migraciones, seed)
+COPY entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
+
 WORKDIR /var/www/html
+
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]

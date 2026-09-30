@@ -1,0 +1,189 @@
+# ============================================
+# APIDIAN - Docker Compose para Dokploy (Traefik)
+# Dominio: apidian3.gestionxpress.app
+#
+# Uso: en Dokploy crear un servicio "Docker Compose"
+# apuntando a este archivo (docker-compose.dockploy.yml)
+# y definir las variables de entorno en la pestaña Environment.
+# ============================================
+
+services:
+  nginx:
+    build:
+      context: ./docker/nginx
+      dockerfile: Dockerfile
+    container_name: apidian3_nginx
+    working_dir: /var/www/html
+    expose:
+      - "80"
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=dokploy-network
+      # HTTP -> redirige a HTTPS
+      - traefik.http.routers.apidian3-web.rule=Host(`apidian3.gestionxpress.app`)
+      - traefik.http.routers.apidian3-web.entrypoints=web
+      - traefik.http.routers.apidian3-web.service=apidian3
+      - traefik.http.routers.apidian3-web.middlewares=redirect-to-https@file
+      # HTTPS + Let's Encrypt
+      - traefik.http.routers.apidian3-websecure.rule=Host(`apidian3.gestionxpress.app`)
+      - traefik.http.routers.apidian3-websecure.entrypoints=websecure
+      - traefik.http.routers.apidian3-websecure.service=apidian3
+      - traefik.http.routers.apidian3-websecure.tls.certresolver=letsencrypt
+      - traefik.http.services.apidian3.loadbalancer.server.port=80
+    volumes:
+      - ./:/var/www/html
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+      - nginx_cache:/var/cache/nginx
+      - nginx_logs:/var/log/nginx
+    depends_on:
+      - php
+    networks:
+      - api_dian
+      - dokploy-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+  php:
+    build:
+      context: ./docker/php
+      dockerfile: Dockerfile
+    container_name: apidian3_php
+    working_dir: /var/www/html
+    volumes:
+      - ./:/var/www/html
+      - composer_cache:/root/.composer
+    depends_on:
+      mariadb:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - api_dian
+    environment:
+      - APP_NAME=${APP_NAME:-APIDIAN}
+      - APP_VERSION=${APP_VERSION:- v2.1}
+      - APP_ENV=${APP_ENV:-production}
+      - APP_KEY=${APP_KEY:-}
+      - APP_DEBUG=${APP_DEBUG:-false}
+      - APP_PORT=${APP_PORT:-80}
+      - APP_URL=${APP_URL:-https://apidian3.gestionxpress.app}
+      - FORCE_HTTPS=${FORCE_HTTPS:-true}
+      - APP_TIMEZONE=${APP_TIMEZONE:-America/Bogota}
+      - LOG_CHANNEL=${LOG_CHANNEL:-stack}
+      - DB_CONNECTION=${DB_CONNECTION:-mysql}
+      - DB_HOST=${DB_HOST:-mariadb}
+      - DB_PORT=${DB_PORT:-3306}
+      - DB_DATABASE=${DB_DATABASE:-apidian}
+      - DB_USERNAME=${DB_USERNAME:-apidian}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - BROADCAST_DRIVER=${BROADCAST_DRIVER:-log}
+      - CACHE_DRIVER=${CACHE_DRIVER:-file}
+      - QUEUE_CONNECTION=${QUEUE_CONNECTION:-sync}
+      - SESSION_DRIVER=${SESSION_DRIVER:-file}
+      - SESSION_LIFETIME=${SESSION_LIFETIME:-120}
+      - REDIS_HOST=${REDIS_HOST:-redis}
+      - REDIS_PASSWORD=${REDIS_PASSWORD:-null}
+      - REDIS_PORT=${REDIS_PORT:-6379}
+      - MAIL_DRIVER=${MAIL_DRIVER:-smtp}
+      - MAIL_HOST=${MAIL_HOST:-smtp.mailtrap.io}
+      - MAIL_PORT=${MAIL_PORT:-2525}
+      - MAIL_USERNAME=${MAIL_USERNAME:-null}
+      - MAIL_PASSWORD=${MAIL_PASSWORD:-null}
+      - MAIL_ENCRYPTION=${MAIL_ENCRYPTION:-null}
+      - MAIL_FROM_ADDRESS=${MAIL_FROM_ADDRESS:-null}
+      - MAIL_FROM_NAME=${MAIL_FROM_NAME:-}
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID:-}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY:-}
+      - AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION:-us-east-1}
+      - AWS_BUCKET=${AWS_BUCKET:-}
+      - PUSHER_APP_ID=${PUSHER_APP_ID:-}
+      - PUSHER_APP_KEY=${PUSHER_APP_KEY:-}
+      - PUSHER_APP_SECRET=${PUSHER_APP_SECRET:-}
+      - PUSHER_APP_CLUSTER=${PUSHER_APP_CLUSTER:-mt1}
+      - ALLOW_PUBLIC_DOWNLOAD=${ALLOW_PUBLIC_DOWNLOAD:-true}
+      - APPLY_SEND_CUSTORMER_CREDENTIALS=${APPLY_SEND_CUSTORMER_CREDENTIALS:-true}
+      - GRAPHIC_REPRESENTATION_TEMPLATE=${GRAPHIC_REPRESENTATION_TEMPLATE:-2}
+      - ALLOW_PUBLIC_REGISTER=${ALLOW_PUBLIC_REGISTER:-true}
+      - VALIDATE_BEFORE_SENDING=${VALIDATE_BEFORE_SENDING:-true}
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "php", "-v"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+  mariadb:
+    image: mariadb:10.3
+    container_name: apidian3_mariadb
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${DB_DATABASE:-apidian}
+      MYSQL_USER: ${DB_USERNAME:-apidian}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_ROOT_HOST: "%"
+      TZ: ${APP_TIMEZONE:-America/Bogota}
+    volumes:
+      - apidian_mysql_data:/var/lib/mysql
+    networks:
+      - api_dian
+    command: >
+      --character-set-server=utf8
+      --collation-server=utf8_spanish_ci
+      --max-connections=200
+      --innodb-buffer-pool-size=256M
+      --innodb-log-file-size=64M
+      --skip-name-resolve
+      --local-infile=1
+      --default-time-zone=-05:00
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+  redis:
+    image: redis:7-alpine
+    container_name: apidian3_redis
+    command: >
+      redis-server
+      --appendonly yes
+      --maxmemory 256mb
+      --maxmemory-policy allkeys-lru
+      --save 60 1000
+    volumes:
+      - redis_data:/data
+    networks:
+      - api_dian
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+networks:
+  api_dian:
+    driver: bridge
+  dokploy-network:
+    external: true
+
+volumes:
+  apidian_mysql_data:
+    driver: local
+  redis_data:
+    driver: local
+  nginx_cache:
+    driver: local
+  nginx_logs:
+    driver: local
+  composer_cache:
+    driver: local
