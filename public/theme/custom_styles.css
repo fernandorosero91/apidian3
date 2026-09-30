@@ -1,0 +1,430 @@
+/* ============================================
+   APIDIAN - Tema Personalizado GestionXpress
+   Colores basados en el POS
+   ============================================ */
+
+:root {
+    --primary-color: #f97316;
+    --primary-hover: #ea580c;
+    --primary-light: #fed7aa;
+    --sidebar-bg: #1e293b;
+    --sidebar-border: #334155;
+    --sidebar-text: #e2e8f0;
+    --sidebar-active: #f97316;
+    --header-bg: #ffffff;
+    --body-bg: #f1f5f9;
+    --card-bg: #ffffff;
+    --text-primary: #1e293b;
+    --text-secondary: #64748b;
+    --success: #22c55e;
+    --danger: #ef4444;
+    --warning: #f59e0b;
+    --info: #3b82f6;
+}
+
+/* ============================================
+   SIDEBAR
+   ============================================ */
+.sidebar-left {
+    background: var(--sidebar-bg) !important;
+    border-right: 1px solid var(--sidebar-border) !important;
+}
+
+.sidebar-left .sidebar-header {
+    background: var(--sidebar-bg) !important;
+    border-bottom: 1px solid var(--sidebar-border) !important;
+}
+
+.sidebar-left .sidebar-title {
+    color: var(--sidebar-text) !important;
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+
+.sidebar-left .sidebar-toggle i {
+    color: var(--sidebar-text) !important;
+}
+
+.sidebar-left .nano-content {
+    background: var(--sidebar-bg) !important;
+}
+
+/* Nav Items */
+ul.nav-main > li > a {
+    color: var(--sidebar-text) !important;
+    padding: 12px 20px !important;
+    border-radius: 8px;
+    margin: 4px 12px;
+    transition: all 0.2s ease;
+}
+
+ul.nav-main > li > a:hover {
+    background: rgba(249, 115, 22, 0.1) !important;
+    color: var(--primary-color) !important;
+}
+
+ul.nav-main > li.nav-active > a,
+html.sidebar-light:not(.dark) ul.nav-main > li.nav-active > a {
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-hover)) !important;
+    color: #ffffff !important;
+    box-shadow: 0 4px 15px rgba(249, 115, 22, 0.3) !important;
+}
+
+ul.nav-main > li.nav-active > a {
+    box-shadow: none !important;
+}
+
+ul.nav-main > li > a i {
+    color: inherit !important;
+    margin-right: 12px;
+    width: 20px;
+    text-align: center;
+}
+
+/* Submenu */
+ul.nav-main li.nav-parent > a::after {
+    color: var(--sidebar-text) !important;
+}
+
+ul.nav-main ul.nav-children {
+    background: rgba(0, 0, 0, 0.2) !important;
+    border-radius: 8px;
+    margin: 4px 12px;
+    padding: 8px 0;
+}
+
+ul.nav-main ul.nav-children > li > a {
+    color: var(--sidebar-text) !important;
+    padding: 10px 20px !important;
+    margin: 0 !important;
+}
+
+ul.nav-main ul.nav-children > li > a:hover {
+    color: var(--primary-color) !important;
+    background: transparent !important;
+}
+
+/* ============================================
+   HEADER
+   ============================================ */
+.header {
+    background: var(--header-bg) !important;
+    border-bottom: 1px solid #e2e8f0 !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05) !important;
+}
+
+.header .logo-container {
+    background: var(--sidebar-bg) !important;
+    border-right: 1px solid var(--sidebar-border) !important;
+}
+
+.header .separator {
+    background: #e2e8f0 !important;
+}
+
+.userbox {
+    background: transparent !important;
+}
+
+.userbox > a {
+    color: var(--text-primary) !important;
+}
+
+.userbox .profile-info span {
+    color: var(--text-primary) !important;
+}
+
+.userbox .profile-info .name {
+    font-weight: 600 !important;
+}
+
+.userbox .profile-info .role {
+    color: var(--text-secondary) !important;
+}
+
+/* ============================================
+   CONTENT AREA
+   ============================================ */
+.content-body {
+    background: var(--body-bg) !important;
+}
+
+/* ============================================
+   CARDS
+   ============================================ */
+.card {
+    background: var(--card-bg) !important;
+    border: none !important;
+    border-radius: 12px !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.06) !important;
+    overflow: hidden;
+}
+
+.card-header {
+    background: linear-gradient(135deg, var(--sidebar-bg), #334155) !important;
+    color: #ffffff !important;
+    border-bottom: none !important;
+    padding: 16px 24px !important;
+    font-weight: 600 !important;
+    font-size: 1.1rem !important;
+}
+
+.card-body {
+    padding: 24px !important;
+}
+
+/* ============================================
+   TABLES (Element UI)
+   ============================================ */
+.el-table {
+    border-radius: 8px !important;
+    overflow: hidden !important;
+}
+
+.el-table th {
+    background: var(--sidebar-bg) !important;
+    color: #ffffff !important;
+    font-weight: 600 !important;
+    padding: 14px 12px !important;
+    border-bottom: none !important;
+}
+
+.el-table th .cell {
+    color: #ffffff !important;
+}
+
+.el-table td {
+    padding: 14px 12px !important;
+    border-bottom: 1px solid #f1f5f9 !important;
+}
+
+.el-table tr:hover > td {
+    background: #fef3e2 !important;
+}
+
+.el-table--striped .el-table__body tr.el-table__row--striped td {
+    background: #f8fafc !important;
+}
+
+/* ============================================
+   BUTTONS
+   ============================================ */
+.btn-primary,
+.el-button--primary {
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-hover)) !important;
+    border: none !important;
+    color: #ffffff !important;
+    border-radius: 8px !important;
+    padding: 10px 20px !important;
+    font-weight: 500 !important;
+    transition: all 0.2s ease !important;
+    box-shadow: 0 2px 8px rgba(249, 115, 22, 0.3) !important;
+}
+
+.btn-primary:hover,
+.el-button--primary:hover {
+    background: linear-gradient(135deg, var(--primary-hover), #c2410c) !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 4px 12px rgba(249, 115, 22, 0.4) !important;
+}
+
+.btn-info,
+.el-button--info {
+    background: var(--sidebar-bg) !important;
+    border: none !important;
+    color: #ffffff !important;
+    border-radius: 6px !important;
+}
+
+.btn-info:hover,
+.el-button--info:hover {
+    background: #334155 !important;
+}
+
+.btn-success {
+    background: var(--success) !important;
+    border: none !important;
+}
+
+.btn-danger {
+    background: var(--danger) !important;
+    border: none !important;
+}
+
+/* Download buttons in tables */
+.btn-xs {
+    padding: 6px 12px !important;
+    border-radius: 6px !important;
+    font-size: 12px !important;
+}
+
+/* ============================================
+   FORMS
+   ============================================ */
+.form-control,
+.el-input__inner {
+    border: 1px solid #e2e8f0 !important;
+    border-radius: 8px !important;
+    padding: 10px 14px !important;
+    transition: all 0.2s ease !important;
+}
+
+.form-control:focus,
+.el-input__inner:focus {
+    border-color: var(--primary-color) !important;
+    box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.1) !important;
+    outline: none !important;
+}
+
+/* ============================================
+   DROPDOWN / SELECT
+   ============================================ */
+.el-select .el-input__inner {
+    border-radius: 8px !important;
+}
+
+.el-select-dropdown__item.selected {
+    color: var(--primary-color) !important;
+    font-weight: 600 !important;
+}
+
+/* ============================================
+   PAGINATION
+   ============================================ */
+.el-pagination .btn-prev,
+.el-pagination .btn-next,
+.el-pagination .el-pager li {
+    border-radius: 6px !important;
+}
+
+.el-pagination .el-pager li.active {
+    background: var(--primary-color) !important;
+    color: #ffffff !important;
+}
+
+/* ============================================
+   ALERTS & NOTIFICATIONS
+   ============================================ */
+.alert-success {
+    background: #dcfce7 !important;
+    border-color: var(--success) !important;
+    color: #166534 !important;
+}
+
+.alert-danger {
+    background: #fee2e2 !important;
+    border-color: var(--danger) !important;
+    color: #991b1b !important;
+}
+
+.alert-warning {
+    background: #fef3c7 !important;
+    border-color: var(--warning) !important;
+    color: #92400e !important;
+}
+
+.alert-info {
+    background: #dbeafe !important;
+    border-color: var(--info) !important;
+    color: #1e40af !important;
+}
+
+/* ============================================
+   BADGES
+   ============================================ */
+.badge-primary {
+    background: var(--primary-color) !important;
+}
+
+.badge-success {
+    background: var(--success) !important;
+}
+
+.badge-danger {
+    background: var(--danger) !important;
+}
+
+/* ============================================
+   SCROLLBAR
+   ============================================ */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f5f9;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+@media (max-width: 768px) {
+    .card-header {
+        padding: 12px 16px !important;
+        font-size: 1rem !important;
+    }
+    
+    .card-body {
+        padding: 16px !important;
+    }
+    
+    .el-table th,
+    .el-table td {
+        padding: 10px 8px !important;
+    }
+}
+
+/* ============================================
+   ANIMATIONS
+   ============================================ */
+.card {
+    animation: fadeInUp 0.3s ease;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ============================================
+   LOGO AREA
+   ============================================ */
+.header .logo img {
+    max-height: 40px !important;
+}
+
+/* ============================================
+   USER DROPDOWN
+   ============================================ */
+.userbox .dropdown-menu {
+    border-radius: 8px !important;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15) !important;
+    border: 1px solid #e2e8f0 !important;
+}
+
+.userbox .dropdown-menu a {
+    padding: 10px 16px !important;
+    color: var(--text-primary) !important;
+}
+
+.userbox .dropdown-menu a:hover {
+    background: #f8fafc !important;
+    color: var(--primary-color) !important;
+}
