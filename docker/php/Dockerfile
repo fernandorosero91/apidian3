@@ -5,11 +5,11 @@
 FROM php:7.3-fpm
 
 # Debian bullseye está EOL: sus repos fueron movidos a archive.debian.org.
-# Sin esto, apt-get update/install devuelve 404 en bullseye-security.
+# bullseye-security ya no existe (ni en security.debian.org ni en el archivo),
+# el repo principal de archivo ya incluye las actualizaciones finales.
 RUN printf '%s\n' \
         'deb http://archive.debian.org/debian bullseye main' \
         'deb http://archive.debian.org/debian bullseye-updates main' \
-        'deb http://archive.debian.org/debian-security bullseye-security main' \
         > /etc/apt/sources.list \
     && rm -f /etc/apt/sources.list.d/*.list /etc/apt/sources.list.d/*.sources \
     && printf 'Acquire::Check-Valid-Until "false";\nAcquire::AllowInsecureRepositories "true";\n' > /etc/apt/apt.conf.d/99archive
