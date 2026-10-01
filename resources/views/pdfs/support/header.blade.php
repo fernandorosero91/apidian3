@@ -31,7 +31,7 @@
         <td style="width: 50%; padding: 0 1rem;" class="text-center vertical-align-top">
             <div id="empresa-header">
                 <strong>{{$user->name}}</strong><br>
-                @if(isset($request->establishment_name))
+                @if(isset($request->establishment_name) && $request->establishment_name != $user->name)
                     <strong>{{$request->establishment_name}}</strong><br>
                 @endif
             </div>
