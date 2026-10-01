@@ -534,7 +534,7 @@ ul.nav-main ul.nav-children > li > a:hover {
 .quick-icon-blue { background: linear-gradient(135deg, #3b82f6, #2563eb); }
 .quick-icon-green { background: linear-gradient(135deg, #22c55e, #16a34a); }
 .quick-icon-orange { background: linear-gradient(135deg, #f97316, #ea580c); }
-.quick-icon-purple { background: linear-gradient(135deg, #8b5cf6, #7c3aed); }
+.quick-icon-teal { background: linear-gradient(135deg, #14b8a6, #0d9488); }
 
 .quick-body h4 {
     margin: 0 0 2px;
@@ -828,5 +828,49 @@ body {
 
     .card-header .input-group {
         width: 100% !important;
+    }
+
+    /* ========================================
+       GESTIÓN DE EMPRESAS - TABLA RESPONSIVE
+       ======================================== */
+    .card {
+        max-width: 100%;
+    }
+
+    .companies-table {
+        table-layout: fixed;
+        width: 100%;
+    }
+
+    /* Ocultar columnas secundarias en móvil (Email, Docs, Fecha) */
+    .companies-table thead th:nth-child(4),
+    .companies-table tbody td:nth-child(4),
+    .companies-table thead th:nth-child(7),
+    .companies-table tbody td:nth-child(7),
+    .companies-table thead th:nth-child(8),
+    .companies-table tbody td:nth-child(8) {
+        display: none !important;
+    }
+
+    .companies-table th,
+    .companies-table td {
+        padding: 10px 8px !important;
+        font-size: 12px !important;
+        white-space: normal !important;
+        word-break: break-word;
+    }
+
+    .companies-table .badge-prod,
+    .companies-table .badge-hab,
+    .companies-table .badge-on,
+    .companies-table .badge-off {
+        padding: 4px 8px !important;
+        font-size: 10px !important;
+        display: inline-block;
+    }
+
+    .companies-table .dropup .btn {
+        padding: 6px 8px !important;
+        font-size: 11px !important;
     }
 }

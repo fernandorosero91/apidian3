@@ -64,9 +64,9 @@ function updateResolution(id) {
     .then(r => r.json())
     .then(res => {
         if (res.success) {
-            alert('✅ Resolución actualizada');
+            alert('Resolución actualizada');
         } else {
-            alert('❌ ' + res.message);
+            alert('Error: ' + res.message);
         }
     });
 }
@@ -84,9 +84,9 @@ function deleteResolution(id) {
     .then(res => {
         if (res.success) {
             document.getElementById('res-row-' + id).remove();
-            alert('✅ Resolución eliminada');
+            alert('Resolución eliminada');
         } else {
-            alert('❌ ' + res.message);
+            alert('Error: ' + res.message);
         }
     });
 }

@@ -17,7 +17,7 @@
         </div>
     </div>
     <div class="card-body p-0" style="overflow:visible;">
-        <table class="table mb-0">
+        <table class="table mb-0 companies-table">
             <thead>
                 <tr style="background:#f8fafc;">
                     <th class="th-head">#</th>

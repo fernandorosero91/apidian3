@@ -32,7 +32,7 @@
         </a>
 
         <a href="{{ route('configuration_admin') }}" class="quick-card">
-            <div class="quick-icon quick-icon-purple"><i class="fas fa-plus-circle"></i></div>
+            <div class="quick-icon quick-icon-teal"><i class="fas fa-plus-circle"></i></div>
             <div class="quick-body">
                 <h4>Nueva Empresa</h4>
                 <p>Registra y configura una nueva empresa</p>
