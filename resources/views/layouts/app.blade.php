@@ -129,6 +129,13 @@
               @yield('content')
             </section>
         </div>
+
+        <!-- Mobile sidebar overlay + close (cierra el menú al tocar) -->
+        <div class="sidebar-overlay" data-toggle-class="sidebar-left-opened" data-target="html" data-fire-event="sidebar-left-opened"></div>
+        <button type="button" class="sidebar-close-btn" aria-label="Cerrar menú"
+                data-toggle-class="sidebar-left-opened" data-target="html" data-fire-event="sidebar-left-opened">
+            <i class="fas fa-times"></i>
+        </button>
     </section>
 
     <!-- Vendor -->
