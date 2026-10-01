@@ -1,9 +1,11 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="card" style="margin-top: -20px;">
-    <div class="card-header" style="padding: 10px 15px; font-weight: 600;">
-        Lista de Empresas
+<div class="card">
+    <div class="card-header" style="background:linear-gradient(135deg,#1e293b 0%,#334155 100%);padding:18px 24px;border:none;">
+        <h5 class="mb-0 text-white" style="font-weight:600;font-size:16px;">
+            <i class="fa fa-building mr-2" style="color:#f97316;"></i>Lista de Empresas
+        </h5>
     </div>
     <div class="card-body" style="padding: 10px;">
         <div class="table-responsive">

@@ -704,3 +704,129 @@ body {
         grid-template-columns: 1fr;
     }
 }
+
+/* ============================================
+   PANELES LEGACY (Bootstrap 3) -> TARJETAS
+   Aplica a los dashboards de cliente/empleado/vendedor/owner
+   ============================================ */
+.panel {
+    background: #ffffff;
+    border: none !important;
+    border-radius: 14px !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.06) !important;
+    overflow: hidden;
+    margin-bottom: 20px;
+}
+
+.panel > .panel-heading,
+.panel-heading {
+    background: linear-gradient(135deg, #1e293b, #334155) !important;
+    color: #ffffff !important;
+    border: none !important;
+    padding: 18px 24px !important;
+    border-radius: 14px 14px 0 0 !important;
+}
+
+.panel-heading h1,
+.panel-heading h2,
+.panel-heading h3,
+.panel-heading h4 {
+    margin: 0;
+    font-size: 1.05rem !important;
+    font-weight: 600 !important;
+    color: #ffffff !important;
+}
+
+.panel-body {
+    padding: 20px 24px;
+}
+
+.panel .table {
+    margin-bottom: 0;
+}
+
+.panel .table > tbody > tr > td,
+.panel .table > thead > tr > th {
+    vertical-align: middle;
+}
+
+.panel .thead-dark th {
+    background: #1e293b !important;
+    color: #ffffff !important;
+    border-color: #334155 !important;
+}
+
+/* Contenedores dentro del área de contenido */
+.content-body > .container {
+    max-width: 100% !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+}
+
+.content-body > .container > .panel {
+    margin-bottom: 0;
+}
+
+/* ============================================
+   COMPANIES - TOOLBAR RESPONSIVE
+   ============================================ */
+.search-company {
+    width: 260px;
+}
+
+@media (max-width: 767px) {
+    .search-company {
+        width: 100% !important;
+    }
+
+    .card-header .d-flex.justify-content-between {
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    /* Tablas de los dashboards: scroll horizontal en móvil */
+    .content-body .panel table {
+        display: block;
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        white-space: nowrap;
+    }
+
+    /* Modal de empresas */
+    #modalEdit .modal-dialog {
+        margin: 10px !important;
+    }
+
+    #modalEdit .fgrid-2,
+    #modalEdit .fgrid-3,
+    #modalEdit .fgrid-4 {
+        grid-template-columns: 1fr !important;
+    }
+
+    #modalEdit .modal-tabs {
+        overflow-x: auto;
+    }
+
+    #modalEdit #tabsNav {
+        flex-wrap: nowrap;
+    }
+
+    /* Element UI */
+    .el-table {
+        font-size: 12px !important;
+    }
+
+    .el-table .cell {
+        word-break: break-word;
+    }
+
+    /* Filtros de Documentos a ancho completo */
+    #filter-type {
+        width: 100% !important;
+    }
+
+    .card-header .input-group {
+        width: 100% !important;
+    }
+}

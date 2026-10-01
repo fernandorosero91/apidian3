@@ -3,14 +3,14 @@
 @section('content')
 <div class="card shadow-sm" style="border:none;border-radius:12px;overflow:visible;">
     <div class="card-header" style="background:linear-gradient(135deg,#1e293b 0%,#334155 100%);padding:18px 24px;border:none;">
-        <div class="d-flex justify-content-between align-items-center">
+        <div class="d-flex justify-content-between align-items-center flex-wrap" style="gap:10px;">
             <h5 class="mb-0 text-white" style="font-weight:600;font-size:16px;">
                 <i class="fa fa-building mr-2" style="color:#f97316;"></i>Gestión de Empresas
             </h5>
-            <div class="d-flex align-items-center" style="gap:12px;">
-                <div style="position:relative;">
+            <div class="d-flex align-items-center flex-wrap" style="gap:12px;">
+                <div style="position:relative;flex:1;min-width:220px;">
                     <i class="fa fa-search" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:#94a3b8;"></i>
-                    <input type="text" id="search" placeholder="Buscar empresa..." onkeyup="debounceSearch()" style="width:260px;padding:10px 12px 10px 38px;border:none;border-radius:8px;font-size:14px;background:#f1f5f9;">
+                    <input type="text" id="search" class="search-company" placeholder="Buscar empresa..." onkeyup="debounceSearch()" style="padding:10px 12px 10px 38px;border:none;border-radius:8px;font-size:14px;background:#f1f5f9;">
                 </div>
                 <a href="/configuration_admin" class="btn-orange"><i class="fa fa-plus"></i> Nueva Empresa</a>
             </div>
