@@ -796,6 +796,7 @@ body {
     /* Modal de empresas */
     #modalEdit .modal-dialog {
         margin: 10px !important;
+        max-width: calc(100% - 20px) !important;
     }
 
     #modalEdit .fgrid-2,
@@ -831,46 +832,97 @@ body {
     }
 
     /* ========================================
-       GESTIÓN DE EMPRESAS - TABLA RESPONSIVE
+       GESTIÓN DE EMPRESAS - TARJETAS EN MÓVIL
        ======================================== */
     .card {
         max-width: 100%;
     }
 
     .companies-table {
-        table-layout: fixed;
-        width: 100%;
+        border: 0;
     }
 
-    /* Ocultar columnas secundarias en móvil (Email, Docs, Fecha) */
-    .companies-table thead th:nth-child(4),
-    .companies-table tbody td:nth-child(4),
-    .companies-table thead th:nth-child(7),
-    .companies-table tbody td:nth-child(7),
-    .companies-table thead th:nth-child(8),
-    .companies-table tbody td:nth-child(8) {
-        display: none !important;
+    .companies-table thead {
+        display: none;
     }
 
-    .companies-table th,
+    .companies-table tbody {
+        display: block;
+    }
+
+    .companies-table tr {
+        display: block;
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 6px 12px;
+        margin: 0 0 10px;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+    }
+
     .companies-table td {
-        padding: 10px 8px !important;
-        font-size: 12px !important;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 7px 0 !important;
+        border: none !important;
+        border-bottom: 1px dashed #eef2f7 !important;
         white-space: normal !important;
-        word-break: break-word;
+        font-size: 13px !important;
+        text-align: right !important;
     }
+
+    .companies-table td:last-child {
+        border-bottom: none !important;
+    }
+
+    .companies-table td::before {
+        font-weight: 700;
+        color: #64748b;
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        text-align: left;
+        flex: 0 0 auto;
+    }
+
+    .companies-table td:nth-child(1)::before { content: "#"; }
+    .companies-table td:nth-child(2)::before { content: "NIT"; }
+    .companies-table td:nth-child(3)::before { content: "Empresa"; }
+    .companies-table td:nth-child(4)::before { content: "Email"; }
+    .companies-table td:nth-child(5)::before { content: "Ambiente"; }
+    .companies-table td:nth-child(6)::before { content: "Estado"; }
+    .companies-table td:nth-child(7)::before { content: "Docs"; }
+    .companies-table td:nth-child(8)::before { content: "Fecha"; }
+    .companies-table td:nth-child(9)::before { content: "Acciones"; }
 
     .companies-table .badge-prod,
     .companies-table .badge-hab,
     .companies-table .badge-on,
     .companies-table .badge-off {
-        padding: 4px 8px !important;
+        padding: 4px 10px !important;
         font-size: 10px !important;
         display: inline-block;
     }
 
+    .companies-table .dropup {
+        display: inline-block;
+    }
+
     .companies-table .dropup .btn {
-        padding: 6px 8px !important;
+        padding: 6px 10px !important;
         font-size: 11px !important;
+    }
+
+    /* Estado vacío */
+    .companies-table td[colspan] {
+        display: block !important;
+        text-align: center !important;
+        border-bottom: none !important;
+    }
+
+    .companies-table td[colspan]::before {
+        content: "" !important;
     }
 }
