@@ -100,10 +100,34 @@ RUN echo "date.timezone = America/Bogota" >> /usr/local/etc/php/conf.d/custom.in
 # No limpiar variables de entorno (necesario para Traefik/Dokploy)
 RUN echo "clear_env = no" >> /usr/local/etc/php-fpm.d/zz-performance.conf
 
-# Entrypoint que automatiza el despliegue (composer, .env, migraciones, seed)
-COPY entrypoint.sh /usr/local/bin/entrypoint.sh
+# Entrypoint que automatiza el despliegue (.env, migraciones, seed, admin)
+COPY docker/php/entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
 
 WORKDIR /var/www/html
+
+# Código de la aplicación dentro de la imagen
+COPY . /var/www/html
+
+# Instalar dependencias en el build: el vendor queda completo y fijo en la imagen
+ENV COMPOSER_ALLOW_SUPERUSER=1 \
+    COMPOSER_PROCESS_TIMEOUT=900
+RUN mkdir -p /root/.composer \
+    && printf '%s' '{"config":{"platform-check":false,"allow-plugins":{"*":true}}}' > /root/.composer/config.json \
+    && (composer install --no-dev --optimize-autoloader --ignore-platform-reqs --no-interaction \
+        || (rm -f composer.lock && composer install --no-dev --optimize-autoloader --ignore-platform-reqs --no-interaction))
+
+# Archivos de firma DIAN
+RUN cp -f resources/templates/xml/urn/*.* resources/templates/xml/ 2>/dev/null || true
+RUN if [ -d vendor/ubl21dian/torresoftware/src/XAdES/urn ]; then cp -f vendor/ubl21dian/torresoftware/src/XAdES/urn/*.* vendor/ubl21dian/torresoftware/src/XAdES/ 2>/dev/null || true; fi
+RUN cp -f resources/templates/xml/urn/Request.php vendor/laravel/framework/src/Illuminate/Http/Request.php 2>/dev/null || true
+
+# Estructura de storage + permisos
+RUN mkdir -p storage/app/certificates storage/app/public storage/app/xml storage/app/zip \
+        storage/framework/cache/data storage/framework/sessions storage/framework/views \
+        storage/logs bootstrap/cache \
+    && (unzip -o storage.zip >/dev/null 2>&1 || true) \
+    && chown -R www-data:www-data storage bootstrap/cache \
+    && chmod -R 775 storage bootstrap/cache
 
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]

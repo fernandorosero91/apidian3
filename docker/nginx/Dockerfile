@@ -84,6 +84,9 @@ RUN echo "# NGINX OPTIMIZADO PARA MÁXIMO RENDIMIENTO" > /etc/nginx/nginx.conf \
     && echo "    include /etc/nginx/conf.d/*.conf;" >> /etc/nginx/nginx.conf \
     && echo "}" >> /etc/nginx/nginx.conf
 
+# Configuración del sitio (root /app/public + fastcgi a php)
+COPY docker/nginx/default.dokploy.conf /etc/nginx/conf.d/default.conf
+
 # Copiar archivos estáticos (CSS/JS/imágenes) dentro de la imagen.
 # Se sirven desde /app/public para no depender del bind mount del código.
 COPY public /app/public

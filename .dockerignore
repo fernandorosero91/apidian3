@@ -12,7 +12,6 @@ node_modules
 storage
 tests
 *.log
-storage.zip
 docker-compose.yml
 docker-compose.yml.*
 docker-compose.dockploy.yml
