@@ -49,7 +49,7 @@
     <link rel="stylesheet" href="{{ asset('porto-light/css/custom.css') }}" />
 
     @if (file_exists(public_path('theme/custom_styles.css')))
-        <link rel="stylesheet" href="{{ asset('theme/custom_styles.css') }}" />
+        <link rel="stylesheet" href="{{ asset('theme/custom_styles.css') }}?v={{ filemtime(public_path('theme/custom_styles.css')) }}" />
     @endif
 
 

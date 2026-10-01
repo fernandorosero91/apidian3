@@ -27,12 +27,6 @@ $cust_id = $path[2];
                                 <span>Documentos</span>
                             </a>
                         </li>
-                        <li class="{{ ($path[0] === 'taxes')?'nav-active':'' }}">
-                            <a class="nav-link" href="{{route('tax_index')}}">
-                                <i class="fas fa-percent" aria-hidden="true"></i>
-                                <span>Impuestos</span>
-                            </a>
-                        </li>
                         <li class="nav-parent {{ in_array($path[0], ['configuration', 'companies'])?'nav-active nav-expanded':'' }}">
                             <a class="nav-link" href="#">
                                 <i class="fas fa-building" aria-hidden="true"></i>

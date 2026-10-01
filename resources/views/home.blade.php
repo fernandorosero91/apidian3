@@ -22,15 +22,6 @@
             <i class="fas fa-arrow-right quick-arrow"></i>
         </a>
 
-        <a href="{{ route('tax_index') }}" class="quick-card">
-            <div class="quick-icon quick-icon-green"><i class="fas fa-percent"></i></div>
-            <div class="quick-body">
-                <h4>Impuestos</h4>
-                <p>Configuración de impuestos y tarifas</p>
-            </div>
-            <i class="fas fa-arrow-right quick-arrow"></i>
-        </a>
-
         <a href="{{ route('companies_index') }}" class="quick-card">
             <div class="quick-icon quick-icon-orange"><i class="fas fa-building"></i></div>
             <div class="quick-body">

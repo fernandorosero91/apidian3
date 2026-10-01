@@ -28,6 +28,14 @@ mkdir -p \
     bootstrap/cache
 
 # --------------------------------------------
+# 1b. Compartir estáticos con nginx (volumen /app_public)
+# --------------------------------------------
+if [ -d public ] && [ -d /app_public ]; then
+    echo "==> Copiando archivos estáticos a /app_public"
+    cp -a public/. /app_public/ 2>/dev/null || true
+fi
+
+# --------------------------------------------
 # 2. Restaurar estructura de storage (storage.zip)
 # --------------------------------------------
 if [ -f storage.zip ] && [ ! -d storage/fonts ]; then
@@ -266,6 +274,12 @@ fi
 # --------------------------------------------
 echo "==> Optimizando Laravel"
 php artisan storage:link 2>/dev/null || true
+
+# Enlace de storage en el volumen compartido con nginx
+if [ -d /app_public ]; then
+    ln -sfn /var/www/html/storage/app/public /app_public/storage 2>/dev/null || true
+fi
+
 php artisan config:cache 2>/dev/null || true
 php artisan config:clear 2>/dev/null || true
 php artisan cache:clear 2>/dev/null || true
