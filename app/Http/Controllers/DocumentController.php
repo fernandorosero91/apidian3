@@ -425,7 +425,11 @@ class DocumentController extends Controller
             
             foreach ($possiblePaths as $filePath) {
                 if (file_exists($filePath)) {
-                    return response()->download($filePath, $xml); // Descargar con nombre original
+                    return response()->download($filePath, $xml, [
+                        'Cache-Control' => 'no-store, no-cache, must-revalidate, max-age=0',
+                        'Pragma' => 'no-cache',
+                        'Expires' => '0',
+                    ]); // Descargar con nombre original
                 }
             }
         }
@@ -471,7 +475,11 @@ class DocumentController extends Controller
             
             foreach ($possiblePaths as $filePath) {
                 if (file_exists($filePath)) {
-                    return response()->download($filePath, $pdf);
+                    return response()->download($filePath, $pdf, [
+                        'Cache-Control' => 'no-store, no-cache, must-revalidate, max-age=0',
+                        'Pragma' => 'no-cache',
+                        'Expires' => '0',
+                    ]);
                 }
             }
         }
