@@ -84,9 +84,14 @@ RUN echo "# NGINX OPTIMIZADO PARA MÁXIMO RENDIMIENTO" > /etc/nginx/nginx.conf \
     && echo "    include /etc/nginx/conf.d/*.conf;" >> /etc/nginx/nginx.conf \
     && echo "}" >> /etc/nginx/nginx.conf
 
+# Copiar archivos estáticos (CSS/JS/imágenes) dentro de la imagen.
+# Se sirven desde /app/public para no depender del bind mount del código.
+COPY public /app/public
+RUN ln -sf /var/www/html/storage/app/public /app/public/storage || true
+
 # Healthcheck optimizado
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-    CMD curl -f http://localhost/health || exit 1
+    CMD curl -f http://localhost/ || exit 1
 
 # Exponer puertos
 EXPOSE 80 443
