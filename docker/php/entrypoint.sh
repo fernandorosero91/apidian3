@@ -128,7 +128,11 @@ export APP_KEY="$(grep -E '^APP_KEY=' .env | head -1 | cut -d= -f2-)"
 # --------------------------------------------
 # 5. Dependencias de Composer
 # --------------------------------------------
-if [ ! -f vendor/autoload.php ]; then
+# Se considera vendor completo si existen el autoloader y un archivo de control
+# (si falta cualquiera, el vendor quedó a medias y hay que reinstalar limpio).
+if [ -f vendor/autoload.php ] && [ -f vendor/vlucas/phpdotenv/src/Exception/InvalidPathException.php ]; then
+    echo "==> Dependencias ya instaladas"
+else
     echo "==> Instalando dependencias con Composer (puede tardar varios minutos)"
     export COMPOSER_ALLOW_SUPERUSER=1
     export COMPOSER_PROCESS_TIMEOUT=900
@@ -136,20 +140,33 @@ if [ ! -f vendor/autoload.php ]; then
     echo '{"config":{"platform-check":false,"allow-plugins":{"*":true}}}' > /root/.composer/config.json
     composer config --global platform-check false || true
 
-    # composer.lock puede no ser compatible con la plataforma; se regenera
-    rm -f composer.lock
+    # Instalación limpia: se elimina cualquier vendor incompleto previo
+    rm -rf vendor
 
+    COMPOSER_OK=0
     for i in 1 2 3; do
         if composer install --no-dev --optimize-autoloader --ignore-platform-reqs --no-interaction; then
+            COMPOSER_OK=1
             echo "==> Dependencias instaladas"
             break
         fi
         echo "==> Composer falló (intento $i/3), reintentando en 10s..."
         sleep 10
-        if [ "$i" = "3" ]; then
-            echo "!!! ERROR: no se pudieron instalar las dependencias"
-        fi
     done
+
+    # Fallback: si el composer.lock está desactualizado, se regenera
+    if [ "$COMPOSER_OK" != "1" ]; then
+        echo "==> Reintentando sin composer.lock..."
+        rm -f composer.lock
+        if composer install --no-dev --optimize-autoloader --ignore-platform-reqs --no-interaction; then
+            COMPOSER_OK=1
+        fi
+    fi
+
+    if [ "$COMPOSER_OK" != "1" ] || [ ! -f vendor/autoload.php ]; then
+        echo "!!! ERROR CRÍTICO: no se pudieron instalar las dependencias de Composer"
+        exit 1
+    fi
 fi
 
 # --------------------------------------------
