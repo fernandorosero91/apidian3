@@ -122,6 +122,17 @@ RUN cp -f resources/templates/xml/urn/*.* resources/templates/xml/ 2>/dev/null |
 RUN if [ -d vendor/ubl21dian/torresoftware/src/XAdES/urn ]; then cp -f vendor/ubl21dian/torresoftware/src/XAdES/urn/*.* vendor/ubl21dian/torresoftware/src/XAdES/ 2>/dev/null || true; fi
 RUN cp -f resources/templates/xml/urn/Request.php vendor/laravel/framework/src/Illuminate/Http/Request.php 2>/dev/null || true
 
+# Cambiar el prefijo "TORRESOFTWARE" (marca del autor de la librería) por "GestionXpress"
+# en los IDs de firma XAdES y del token SOAP. Es solo un identificador: no afecta la validez DIAN.
+RUN for f in \
+        vendor/ubl21dian/torresoftware/src/XAdES/SignInvoice.php \
+        vendor/ubl21dian/torresoftware/src/XAdES/urn/SignInvoice.php \
+        vendor/ubl21dian/torresoftware/src/BinarySecurityToken/SOAP.php ; do \
+        if [ -f "$f" ]; then sed -i 's/TORRESOFTWARE/GestionXpress/g' "$f"; fi ; \
+    done \
+    && echo "--- Verificando reemplazo TORRESOFTWARE ---" \
+    && (grep -rn "TORRESOFTWARE" vendor/ubl21dian && echo "ADVERTENCIA: quedan referencias" || echo "OK: sin TORRESOFTWARE")
+
 # Estructura de storage + permisos
 RUN mkdir -p storage/app/certificates storage/app/public storage/app/xml storage/app/zip \
         storage/framework/cache/data storage/framework/sessions storage/framework/views \
