@@ -11,12 +11,13 @@
 # ============================================
 FROM ghcr.io/mpyw/php-eol-cve-2026-109618-109619:7.4-fpm@sha256:e7387ea53ae2a329ee2a4289dba3b77047e913e0e93ea405e8a999dc62010332
 
-# Debian bullseye está EOL: sus repos fueron movidos a archive.debian.org.
-# bullseye-security ya no existe (ni en security.debian.org ni en el archivo),
-# el repo principal de archivo ya incluye las actualizaciones finales.
+# Debian bullseye está EOL: sus repos están en archive.debian.org.
+# Se incluye bullseye-security porque la imagen base trae paquetes +deb11uN
+# (p. ej. libssl1.1 u8) y los paquetes -dev deben coincidir exactamente.
 RUN printf '%s\n' \
         'deb http://archive.debian.org/debian bullseye main' \
         'deb http://archive.debian.org/debian bullseye-updates main' \
+        'deb http://archive.debian.org/debian-security bullseye-security main' \
         > /etc/apt/sources.list \
     && rm -f /etc/apt/sources.list.d/*.list /etc/apt/sources.list.d/*.sources \
     && printf 'Acquire::Check-Valid-Until "false";\nAcquire::AllowInsecureRepositories "true";\n' > /etc/apt/apt.conf.d/99archive

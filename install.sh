@@ -225,10 +225,11 @@ cat > docker/php/Dockerfile << 'DOCKERFILE'
 # equipo PHP publicó el backport OFICIAL para esta rama. Imagen fijada por digest.
 FROM ghcr.io/mpyw/php-eol-cve-2026-109618-109619:7.4-fpm@sha256:e7387ea53ae2a329ee2a4289dba3b77047e913e0e93ea405e8a999dc62010332
 
-# Debian bullseye está EOL: usar archive.debian.org para que apt funcione.
+# Debian bullseye está EOL: usar archive.debian.org (incluye security) para que apt funcione.
 RUN printf '%s\n' \
         'deb http://archive.debian.org/debian bullseye main' \
         'deb http://archive.debian.org/debian bullseye-updates main' \
+        'deb http://archive.debian.org/debian-security bullseye-security main' \
         > /etc/apt/sources.list \
     && rm -f /etc/apt/sources.list.d/*.list /etc/apt/sources.list.d/*.sources \
     && printf 'Acquire::Check-Valid-Until "false";\nAcquire::AllowInsecureRepositories "true";\n' > /etc/apt/apt.conf.d/99archive
