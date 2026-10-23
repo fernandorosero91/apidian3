@@ -221,7 +221,17 @@ default-character-set = utf8
 MARIADBCONF
 
 cat > docker/php/Dockerfile << 'DOCKERFILE'
-FROM php:7.3-fpm
+# PHP2Shell (CVE-2026-109618 / CVE-2026-109619): PHP 7.4 está EOL, pero el
+# equipo PHP publicó el backport OFICIAL para esta rama. Imagen fijada por digest.
+FROM ghcr.io/mpyw/php-eol-cve-2026-109618-109619:7.4-fpm@sha256:e7387ea53ae2a329ee2a4289dba3b77047e913e0e93ea405e8a999dc62010332
+
+# Debian bullseye está EOL: usar archive.debian.org para que apt funcione.
+RUN printf '%s\n' \
+        'deb http://archive.debian.org/debian bullseye main' \
+        'deb http://archive.debian.org/debian bullseye-updates main' \
+        > /etc/apt/sources.list \
+    && rm -f /etc/apt/sources.list.d/*.list /etc/apt/sources.list.d/*.sources \
+    && printf 'Acquire::Check-Valid-Until "false";\nAcquire::AllowInsecureRepositories "true";\n' > /etc/apt/apt.conf.d/99archive
 
 RUN apt-get update && apt-get install -y \
     git \
@@ -238,11 +248,13 @@ RUN apt-get update && apt-get install -y \
     zip \
     unzip \
     libssl-dev \
+    pkg-config \
     libmagickwand-dev \
     imagemagick \
     && rm -r /var/lib/apt/lists/*
 
-RUN docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
+# PHP 7.4+: GD usa --with-freetype/--with-jpeg (los *-dir ya no existen).
+RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-configure imap --with-kerberos --with-imap-ssl \
     && docker-php-ext-install -j$(nproc) \
         pdo_mysql \
@@ -266,7 +278,9 @@ COPY --from=composer:2.2 /usr/bin/composer /usr/bin/composer
 RUN echo "upload_max_filesize=100M" >> /usr/local/etc/php/conf.d/custom.ini \
     && echo "post_max_size=100M" >> /usr/local/etc/php/conf.d/custom.ini \
     && echo "memory_limit=512M" >> /usr/local/etc/php/conf.d/custom.ini \
-    && echo "max_execution_time=300" >> /usr/local/etc/php/conf.d/custom.ini
+    && echo "max_execution_time=300" >> /usr/local/etc/php/conf.d/custom.ini \
+    && echo "expose_php=Off" >> /usr/local/etc/php/conf.d/custom.ini \
+    && echo "session.upload_progress.enabled=0" >> /usr/local/etc/php/conf.d/custom.ini
 
 RUN echo "opcache.enable=1" >> /usr/local/etc/php/conf.d/opcache.ini \
     && echo "opcache.enable_cli=1" >> /usr/local/etc/php/conf.d/opcache.ini \

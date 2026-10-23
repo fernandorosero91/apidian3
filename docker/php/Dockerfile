@@ -1,8 +1,15 @@
 # ============================================
-# DOCKERFILE PHP 7.3 - OPTIMIZADO PARA MÁXIMO RENDIMIENTO
-# Compatible con DIAN Colombia - Sin problemas de Composer
+# DOCKERFILE PHP 7.4 - OPTIMIZADO PARA MÁXIMO RENDIMIENTO
+# Compatible con DIAN Colombia / Laravel 5.8
+#
+# SEGURIDAD - PHP2Shell (CVE-2026-109618 / CVE-2026-109619):
+# PHP 7.4 está EOL y no recibe parches generales, pero el equipo PHP
+# publicó el backport OFICIAL de esta corrección para la rama 7.4.
+# Se usa una imagen con ese parche, fijada por digest para build reproducible.
+# Verificar el parche con: php -i | grep max_multipart_body_parts
+# Plan: migrar a PHP 8.2+ con Laravel 10/11.
 # ============================================
-FROM php:7.3-fpm
+FROM ghcr.io/mpyw/php-eol-cve-2026-109618-109619:7.4-fpm@sha256:e7387ea53ae2a329ee2a4289dba3b77047e913e0e93ea405e8a999dc62010332
 
 # Debian bullseye está EOL: sus repos fueron movidos a archive.debian.org.
 # bullseye-security ya no existe (ni en security.debian.org ni en el archivo),
@@ -30,13 +37,15 @@ RUN apt-get update && apt-get install -y \
     zip \
     unzip \
     libssl-dev \
+    pkg-config \
     libmagickwand-dev \
     imagemagick \
     && rm -rf /var/lib/apt/lists/*
 
 # Configurar e instalar extensiones PHP (EXACTAS según guía original)
 # mbstring, soap, zip, mysql, curl, gd, xml, intl, imap, imagick
-RUN docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
+# PHP 7.4+: GD usa --with-freetype/--with-jpeg (los *-dir ya no existen).
+RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-configure imap --with-kerberos --with-imap-ssl \
     && docker-php-ext-install -j$(nproc) \
         pdo_mysql \
@@ -68,7 +77,9 @@ RUN echo "upload_max_filesize=100M" >> /usr/local/etc/php/conf.d/custom.ini \
     && echo "post_max_size=100M" >> /usr/local/etc/php/conf.d/custom.ini \
     && echo "memory_limit=1024M" >> /usr/local/etc/php/conf.d/custom.ini \
     && echo "max_execution_time=300" >> /usr/local/etc/php/conf.d/custom.ini \
-    && echo "max_input_vars=3000" >> /usr/local/etc/php/conf.d/custom.ini
+    && echo "max_input_vars=3000" >> /usr/local/etc/php/conf.d/custom.ini \
+    && echo "expose_php=Off" >> /usr/local/etc/php/conf.d/custom.ini \
+    && echo "session.upload_progress.enabled=0" >> /usr/local/etc/php/conf.d/custom.ini
 
 # Configurar OPcache para máximo rendimiento
 RUN echo "opcache.enable=1" >> /usr/local/etc/php/conf.d/opcache.ini \
