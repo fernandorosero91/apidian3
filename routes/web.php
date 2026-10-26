@@ -94,6 +94,7 @@ Route::group(['middleware' => 'auth'], function() {
     Route::get('documents/downloadxml/{xml}', 'DocumentController@downloadxml');
     Route::get('documents/downloadpdf/{pdf}', 'DocumentController@downloadpdf');
     Route::post('documents/resend/{id}', 'DocumentController@resend')->name('documents_resend');
+    Route::post('documents/delete/{id}', 'DocumentController@destroy')->name('documents_destroy');
 
 });
 
