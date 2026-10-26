@@ -133,6 +133,45 @@
 #modalEdit .btn-sm-edit:hover{background:#bfdbfe!important;}
 #modalEdit .btn-sm-del{background:#fee2e2!important;color:#dc2626!important;}
 #modalEdit .btn-sm-del:hover{background:#fecaca!important;}
+
+/* ============================================
+   RESPONSIVE - MODAL EDITAR EMPRESA
+   ============================================ */
+
+/* Tablet: 2 columnas */
+@media (max-width: 991.98px) {
+    #modalEdit .modal-dialog{max-width:calc(100% - 24px)!important;margin:12px auto!important;}
+    #modalEdit .fgrid-3,
+    #modalEdit .fgrid-4{grid-template-columns:repeat(2,1fr)!important;}
+}
+
+/* Móvil: una columna, modal a pantalla completa */
+@media (max-width: 767.98px) {
+    #modalEdit .modal-dialog{max-width:100%!important;margin:0!important;min-height:100%;}
+    #modalEdit .modal-content{border-radius:0!important;min-height:100vh;}
+    #modalEdit .modal-header-dark{padding:16px 18px!important;font-size:15px!important;}
+    #modalEdit .modal-tabs{padding:0 8px!important;}
+    #modalEdit #tabsNav{flex-wrap:wrap!important;}
+    #modalEdit #tabsNav .nav-item{flex:1 1 50%;}
+    #modalEdit #tabsNav .nav-link{width:100%!important;justify-content:center!important;padding:12px 8px!important;font-size:12px!important;white-space:nowrap!important;}
+    #modalEdit .tab-content{padding:14px!important;}
+    #modalEdit .fcard{padding:16px!important;border-radius:12px!important;margin-bottom:14px!important;}
+    #modalEdit .fcard-title{font-size:14px!important;}
+    #modalEdit .fcard-desc{font-size:12px!important;margin-bottom:14px!important;}
+    #modalEdit .fgrid-2,
+    #modalEdit .fgrid-3,
+    #modalEdit .fgrid-4{grid-template-columns:1fr!important;gap:12px!important;margin-bottom:12px!important;}
+    #modalEdit .flabel{font-size:11px!important;text-transform:none!important;letter-spacing:0!important;}
+    #modalEdit .finput,
+    #modalEdit input.finput,
+    #modalEdit select.finput{font-size:16px!important;padding:11px 12px!important;}
+    #modalEdit .btn-orange,
+    #modalEdit .btn-gray{width:100%!important;justify-content:center!important;}
+    #modalEdit .fcard > .btn-orange{margin-top:4px!important;}
+    #modalEdit #t4 > div:first-child{flex-direction:column!important;align-items:stretch!important;gap:10px!important;}
+    #modalEdit .res-tbl th,
+    #modalEdit .res-tbl td{padding:8px 10px!important;}
+}
 </style>
 @endpush
 
