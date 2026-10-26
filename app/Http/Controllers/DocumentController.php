@@ -674,4 +674,80 @@ class DocumentController extends Controller
             ], 500);
         }
     }
+
+    /**
+     * Eliminar (soft delete) un documento pendiente.
+     *
+     * Solo permite documentos sin CUFE/CUNE y con state_document_id != 1.
+     * No borra XML/PDF porque pueden compartirse con el documento procesado.
+     */
+    public function destroy(Request $request, $id)
+    {
+        try {
+            $isPayroll = (bool) $request->input('is_payroll', false);
+            $model = $isPayroll ? DocumentPayroll::class : Document::class;
+            $document = $model::find($id);
+
+            if (!$document) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Documento no encontrado.'
+                ], 404);
+            }
+
+            $stateId = $document->state_document_id ?? 0;
+            $cufe = (string) ($isPayroll ? ($document->cune ?? '') : ($document->cufe ?? ''));
+            $hasCufe = strlen($cufe) > 10;
+
+            if ($stateId == 1 || $hasCufe) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Solo se pueden eliminar documentos pendientes (sin CUFE/CUNE y sin procesar).'
+                ], 422);
+            }
+
+            // Si el usuario pertenece a una empresa, solo puede eliminar documentos de esa empresa.
+            $user = auth()->user();
+            if ($user && $user->company && !$user->id_administrator) {
+                if ($user->company->identification_number != $document->identification_number) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'No tiene permisos para eliminar este documento.'
+                    ], 403);
+                }
+            }
+
+            $number = $isPayroll
+                ? (($document->prefix ?? '') . ($document->consecutive ?? ''))
+                : (($document->prefix ?? '') . ($document->number ?? ''));
+
+            \App\Log::create([
+                'user_id' => auth()->id(),
+                'payload' => [
+                    'action' => 'delete_pending_document',
+                    'model' => $isPayroll ? 'DocumentPayroll' : 'Document',
+                    'document_id' => $document->id,
+                    'number' => $number,
+                    'identification_number' => $document->identification_number,
+                ],
+            ]);
+
+            // SoftDelete: el registro queda en BD para auditoría/recuperación.
+            $document->delete();
+
+            return response()->json([
+                'success' => true,
+                'message' => "Documento pendiente {$number} eliminado. El documento procesado, si existe, no se modificó."
+            ]);
+        } catch (\Exception $e) {
+            \Log::error('Error deleting pending document ' . $id . ': ' . $e->getMessage(), [
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al eliminar el documento: ' . $e->getMessage()
+            ], 500);
+        }
+    }
 }

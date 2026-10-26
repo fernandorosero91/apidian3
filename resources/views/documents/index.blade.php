@@ -38,10 +38,11 @@
                         <th style="width: 100px;">Estado</th>
                         <th style="width: 90px;" class="text-center">Archivos</th>
                         <th style="width: 100px;" class="text-center">DIAN</th>
+                        <th style="width: 70px;" class="text-center">Acciones</th>
                     </tr>
                 </thead>
                 <tbody id="documents-body">
-                    <tr><td colspan="9" class="text-center py-4 text-muted">Cargando documentos...</td></tr>
+                    <tr><td colspan="10" class="text-center py-4 text-muted">Cargando documentos...</td></tr>
                 </tbody>
             </table>
         </div>
@@ -180,6 +181,21 @@
     background: #2563eb;
 }
 
+/* Botón eliminar pendiente */
+.btn-delete {
+    margin-left: 4px;
+    padding: 2px 6px;
+    background: #ef4444;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 10px;
+    cursor: pointer;
+}
+.btn-delete:hover {
+    background: #dc2626;
+}
+
 /* Input search focus */
 .form-control:focus {
     border-color: #f97316;
@@ -228,7 +244,7 @@ function load() {
             updatePagination();
         })
         .catch(function() {
-            document.getElementById('documents-body').innerHTML = '<tr><td colspan="9" class="text-center py-4 text-danger">Error al cargar</td></tr>';
+            document.getElementById('documents-body').innerHTML = '<tr><td colspan="10" class="text-center py-4 text-danger">Error al cargar</td></tr>';
         });
 }
 
@@ -236,7 +252,7 @@ function render(docs) {
     var tbody = document.getElementById('documents-body');
     
     if (!docs || docs.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="9" class="text-center py-4 text-muted">No se encontraron documentos</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="10" class="text-center py-4 text-muted">No se encontraron documentos</td></tr>';
         return;
     }
     
@@ -271,6 +287,14 @@ function render(docs) {
             dian += '<span class="env-badge ' + envClass + '">' + envText + '</span>';
         }
         
+        // Acciones: solo se puede eliminar si está Pendiente
+        var actions = '<span class="text-muted">-</span>';
+        if (d.state_name === 'Pendiente') {
+            var displayNumber = d.is_payroll ? (d.number || '') : ((d.prefix || '') + (d.number || ''));
+            var safeNumber = String(displayNumber).replace(/"/g, '&quot;');
+            actions = '<button class="btn-delete" title="Eliminar pendiente" data-id="' + d.id + '" data-payroll="' + (d.is_payroll ? '1' : '0') + '" data-number="' + safeNumber + '" onclick="deleteDocument(this)"><i class="fa fa-trash"></i></button>';
+        }
+        
         // Total formateado
         var totalStr = d.total ? '$' + Number(d.total).toLocaleString('es-CO') : '$0';
         
@@ -287,6 +311,7 @@ function render(docs) {
         html += '<td>' + status + '</td>';
         html += '<td class="text-center">' + files + '</td>';
         html += '<td class="text-center">' + dian + '</td>';
+        html += '<td class="text-center">' + actions + '</td>';
         html += '</tr>';
     }
     
@@ -383,6 +408,65 @@ function resend(id) {
                 });
             });
         }
+    });
+}
+
+function deleteDocument(btn) {
+    var id = btn.getAttribute('data-id');
+    var isPayroll = btn.getAttribute('data-payroll') === '1';
+    var number = btn.getAttribute('data-number') || '';
+
+    Swal.fire({
+        title: 'Eliminar documento pendiente',
+        text: '¿Eliminar el documento ' + number + '? Solo se elimina si está Pendiente. El documento procesado, si existe, no se modifica.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#dc2626',
+        cancelButtonColor: '#64748b',
+        confirmButtonText: 'Sí, eliminar',
+        cancelButtonText: 'Cancelar'
+    }).then(function(result) {
+        if (!result.isConfirmed) return;
+
+        fetch('/documents/delete/' + id, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            },
+            body: JSON.stringify({ is_payroll: isPayroll })
+        })
+        .then(function(response) {
+            return response.json().then(function(data) {
+                return { status: response.status, data: data };
+            });
+        })
+        .then(function(result) {
+            if (result.data.success) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Documento eliminado',
+                    text: result.data.message,
+                    confirmButtonColor: '#f97316'
+                });
+                load();
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'No se pudo eliminar',
+                    text: result.data.message || 'Error desconocido',
+                    confirmButtonColor: '#f97316'
+                });
+            }
+        })
+        .catch(function(error) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error de conexión',
+                text: error.message,
+                confirmButtonColor: '#f97316'
+            });
+        });
     });
 }
 </script>
